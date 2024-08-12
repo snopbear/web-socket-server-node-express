@@ -11,7 +11,7 @@ const app = express();
 app.use(
   cors({
     // origin: "http://localhost:4200", // Replace with the Angular app's URL
-    origin: "https://web-socket-server-node-express.onrender.com", // Replace with the Angular app's URL
+    origin: "https://snopbear.github.io", // Replace with the Angular app's URL
     methods: ["GET", "POST"],
   })
 );
@@ -21,7 +21,7 @@ const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
     // origin: "http://localhost:4200",
-    origin: "https://web-socket-server-node-express.onrender.com",
+    origin: "https://snopbear.github.io",
     methods: ["GET", "POST"],
   },
 });
