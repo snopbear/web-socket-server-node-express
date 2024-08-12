@@ -1,0 +1,8 @@
+1. npm init -y
+2. npm install --save express socket.io
+3. npm install -g nodemon
+
+
+to run the app 
+-----------------------------
+nodemon stock-server.js
