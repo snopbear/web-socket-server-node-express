@@ -10,7 +10,8 @@ const app = express();
 // Enable CORS to allow Angular app to communicate with this server
 app.use(
   cors({
-    origin: "http://localhost:4200", // Replace with the Angular app's URL
+    // origin: "http://localhost:4200", // Replace with the Angular app's URL
+    origin: "https://web-socket-server-node-express.onrender.com", // Replace with the Angular app's URL
     methods: ["GET", "POST"],
   })
 );
@@ -19,7 +20,8 @@ app.use(
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: "http://localhost:4200",
+    // origin: "http://localhost:4200",
+    origin: "https://web-socket-server-node-express.onrender.com",
     methods: ["GET", "POST"],
   },
 });
