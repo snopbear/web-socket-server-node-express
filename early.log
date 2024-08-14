@@ -1,0 +1,24 @@
+2024-08-14T20:13:32.209Z - Start Extension 0.4.28 activated for "web-socket-server-node-express"
+ - 2024-08-14T20:13:32.617Z - Project is compatible with extension
+ - 2024-08-14T20:13:32.618Z - 'node_modules' is installed
+ - 2024-08-14T20:13:32.618Z - Start Dependencies creation
+ - 2024-08-14T20:13:33.435Z - Initializing user
+ - 2024-08-14T20:13:33.506Z - Watching file system.
+ - 2024-08-14T20:13:33.512Z - Starting IPC server
+ - 2024-08-14T20:13:33.517Z - IPC server started
+ - 2024-08-14T20:13:33.519Z - Start Init Coverage Provider
+ - 2024-08-14T20:13:33.522Z - End Init Coverage Provider
+ - 2024-08-14T20:13:33.523Z - End Dependencies creation
+ - 2024-08-14T20:13:34.256Z - Start Panel Provider creation/registration
+ - 2024-08-14T20:13:34.260Z - End Panel Provider creation/registration
+ - 2024-08-14T20:13:34.261Z - Start Dependencies bootstrapping
+ - 2024-08-14T20:13:34.262Z - Auth state changed
+ - 2024-08-14T20:13:34.263Z - No user data found on auth state change
+ - 2024-08-14T20:13:34.324Z - Auth state changed
+ - 2024-08-14T20:13:34.327Z - End Dehydrating user
+ - 2024-08-14T20:13:34.383Z - Signin - credentials saved
+ - 2024-08-14T20:13:34.399Z - End Dependencies bootstrapping
+ - 2024-08-14T20:13:34.546Z - Coverage command is running: "npx --no jest --silent -- --coverage --coverageDirectory=/media/assaf/New Volume/Angular-Projects/Assaf-Projects/test/web-socket-server-node-express/.early.coverage --silent --passWithNoTests".
+ - 2024-08-14T20:13:34.581Z - End Extension activated
+ - 2024-08-14T20:13:37.812Z - error
+ - Failed run Coverage command: "npx --no jest --silent -- --coverage --coverageDirectory=/media/assaf/New Volume/Angular-Projects/Assaf-Projects/test/web-socket-server-node-express/.early.coverage --silent --passWithNoTests".
