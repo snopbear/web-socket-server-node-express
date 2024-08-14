@@ -1,20 +1,17 @@
 const express = require("express");
 const http = require("http");
 const { Server } = require("socket.io");
-const fs = require("fs");
-const path = require("path");
 const cors = require("cors");
+const randomStockObject = require("./random-stock-values");
 
+// Create Express app
 const app = express();
-const port = process.env.PORT || 9090;
 
-const pizzasFilePath = path.join(__dirname, "data", "pizzas.json");
-const pizzaOrdersFilePath = path.join(__dirname, "data", "pizzaOrders.json");
-
-// CORS setup for Express
+// Enable CORS to allow Angular app to communicate with this server
 app.use(
   cors({
-    origin: "https://snopbear.github.io", // GitHub Pages URL
+    // origin: "http://localhost:4200", // Replace with the Angular app's URL
+    origin: "https://snopbear.github.io", // Replace with the Angular app's URL
     methods: ["GET", "POST"],
   })
 );
@@ -23,91 +20,58 @@ app.use(
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: "https://snopbear.github.io", // GitHub Pages URL
+    // origin: "http://localhost:4200",
+    origin: "https://snopbear.github.io",
     methods: ["GET", "POST"],
   },
 });
 
-// Pizza namespace for socket connections
-io.of("/pizza").on("connection", (socket) => {
-  console.log("New client connected to /pizza namespace");
+// Define port
+const port = process.env.PORT || 9091;
 
-  // Send pizza list to client
-  fs.readFile(pizzasFilePath, "utf8", (err, data) => {
-    if (err) {
-      console.error("Error reading pizzas.json:", err);
-      return;
+
+io.use((socket, next) => {
+  console.log("Default Namespace!");
+  next();
+});
+
+io.on("connection", (socket) => {
+  console.log("Default Namespace Connection!");
+});
+
+
+// Socket.IO connection event
+io.of("/live").on("connection", (socket) => {
+    console.log("Connected to live namespace!!!");
+
+   let intervalId ;
+  socket.on("joinSocketsRoom", (room) => {
+    if (room == "stocks") {
+      socket.join("stocks");
+
+      // Send stock values every 5 seconds
+      intervalId = setInterval(() => {
+        io.of("/live").to("stocks").emit("liveStocks",[
+          randomStockObject.getAppleStockValues(),
+          randomStockObject.getGoogleStockValues(),
+          randomStockObject.getMicrosoftStockValues()
+
+        ]);
+      }, 5000);
     }
-    const pizzas = JSON.parse(data);
-    socket.emit("pizzaList", pizzas);
   });
 
-  // Send pizza orders count to client
-  fs.readFile(pizzaOrdersFilePath, "utf8", (err, data) => {
-    if (err) {
-      console.error("Error reading pizzaOrders.json:", err);
-      return;
-    }
-    const pizzaOrders = JSON.parse(data);
-    const ordersCount = pizzaOrders.reduce((acc, order) => {
-      acc[order.pizzaName] = (acc[order.pizzaName] || 0) + 1;
-      return acc;
-    }, {});
 
-    const ordersCountArray = Object.keys(ordersCount).map((pizzaName) => ({
-      _id: pizzaName,
-      count: ordersCount[pizzaName],
-    }));
-
-    socket.join("orders");
-    socket.emit("pizzaOrdersCount", ordersCountArray);
-  });
-
-  // Handle new pizza orders from client
-  socket.on("newPizzaOrder", (order) => {
-    socket.join("orders");
-
-    // Read existing orders
-    fs.readFile(pizzaOrdersFilePath, "utf8", (err, data) => {
-      if (err) {
-        console.error("Error reading pizzaOrders.json:", err);
-        return;
-      }
-      const pizzaOrders = JSON.parse(data);
-      pizzaOrders.push(order);
-
-      // Write updated orders back to file
-      fs.writeFile(
-        pizzaOrdersFilePath,
-        JSON.stringify(pizzaOrders, null, 2),
-        (err) => {
-          if (err) {
-            console.error("Error writing to pizzaOrders.json:", err);
-            return;
-          }
-
-          // Send updated orders count to all clients in "orders" room
-          const ordersCount = pizzaOrders.reduce((acc, order) => {
-            acc[order.pizzaName] = (acc[order.pizzaName] || 0) + 1;
-            return acc;
-          }, {});
-
-          const ordersCountArray = Object.keys(ordersCount).map(
-            (pizzaName) => ({
-              _id: pizzaName,
-              count: ordersCount[pizzaName],
-            })
-          );
-
-          io.of("/pizza")
-            .to("orders")
-            .emit("pizzaOrdersCount", ordersCountArray);
-        }
-      );
-    });
+  
+  // Handle disconnection
+  socket.on("disconnect", () => {
+    console.log("Client disconnected");
+    clearInterval(intervalId); // Clear the interval when the client disconnects
   });
 });
 
-server.listen(port, () =>
-  console.log(`Pizza Server is listening on PORT - ${port}`)
-);
+// Function to emit stock values to the connected client
+// Start the server
+server.listen(port, () => {
+  console.log(`The stock server is listening on PORT - ${port}`);
+});
